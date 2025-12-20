@@ -1,6 +1,7 @@
 stages {
   stage('Build') {
     steps {
+    echo 'job lancer'
       sh 'mvn clean package'
     }
   }
