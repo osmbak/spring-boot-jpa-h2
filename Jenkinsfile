@@ -1,20 +1,43 @@
-stages {
-  stage('Build') {
-    steps {
-    echo 'job lancer'
-      sh 'mvn clean package'
-    }
-  }
+pipeline {
+    // 1. L'agent définit où le job doit s'exécuter (any = n'importe quel esclave disponible)
+    agent any
 
-  stage('Build Image') {
-    steps {
-      sh 'docker build -t myapp:1 .'
+    // 2. Optionnel : On définit les outils nécessaires comme Maven
+    tools {
+        maven 'maven-3' // Le nom doit correspondre à celui configuré dans Jenkins
     }
-  }
 
-  stage('Deploy') {
-    steps {
-      sh 'kubectl rollout restart deployment myapp'
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Job lancé'
+                // Utilisation de Maven pour builder le JAR
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                // Construction de l'image Docker
+                sh 'docker build -t myapp:1 .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Déploiement sur Kubernetes
+                sh 'kubectl rollout restart deployment myapp'
+            }
+        }
     }
-  }
+
+    // 3. Optionnel : Actions à faire en cas de succès ou d'échec
+    post {
+        success {
+            echo 'Déploiement terminé avec succès !'
+        }
+        failure {
+            echo 'Le pipeline a échoué. Vérifiez les logs.'
+        }
+    }
 }
