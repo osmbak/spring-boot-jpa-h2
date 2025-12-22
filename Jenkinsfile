@@ -26,8 +26,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Déploiement sur Kubernetes
-                bat 'kubectl rollout restart deployment myapp'
+                // On applique le fichier YAML. S'il n'existe pas, il le crée.
+                      // S'il existe, il le met à jour.
+                      bat 'kubectl apply -f deployment.yaml'
+
+                      // Optionnel : On force le redémarrage pour être sûr qu'il prend la nouvelle image
+                      bat 'kubectl rollout restart deployment myapp'
             }
         }
     }
@@ -35,10 +39,10 @@ pipeline {
     // 3. Optionnel : Actions à faire en cas de succès ou d'échec
     post {
         success {
-            echo 'Déploiement terminé avec succès !'
+            echo 'Deploiement termine avec succes !'
         }
         failure {
-            echo 'Le pipeline a échoué. Vérifiez les logs.'
+            echo 'Le pipeline a echoue. Verifiez les logs.'
         }
     }
 }
