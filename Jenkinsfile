@@ -18,8 +18,9 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                // Construction de l'image Docker
-                bat 'docker build -t myapp:1 .'
+                withEnv(['DOCKER_HOST=npipe:////./pipe/docker_engine']) {
+                    bat 'docker build -t myapp:1 .'
+                }
             }
         }
 
