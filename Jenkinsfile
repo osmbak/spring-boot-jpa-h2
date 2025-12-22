@@ -19,14 +19,14 @@ pipeline {
         stage('Build Image') {
             steps {
                 // Construction de l'image Docker
-                sh 'docker build -t myapp:1 .'
+                bat 'docker build -t myapp:1 .'
             }
         }
 
         stage('Deploy') {
             steps {
                 // Déploiement sur Kubernetes
-                sh 'kubectl rollout restart deployment myapp'
+                bat 'kubectl rollout restart deployment myapp'
             }
         }
     }
